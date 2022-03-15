@@ -4,6 +4,7 @@ This program aims to automate adding your Switch Online Presence to the Discord 
 ## CURRENT STATUS:
 * Found work-around to allow for your own online presence to be shown in the NSO application. ✅
 * Repurposed the `splatnet2statink` repository to fetch your current online status in a JSON format. ✅
+* Working POC using `pypresence`! ✅
 
 ## TO-DO
 * Error Checking.
