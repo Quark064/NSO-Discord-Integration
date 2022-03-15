@@ -3,11 +3,14 @@ import requests, json, re
 import base64, hashlib, uuid
 from bs4 import BeautifulSoup
 
-from apiFunc import callFGenAPI, getElifeAPIHash
+from apiFunc import callFGenAPI
+from fileIO import openConfig, writeConfig
 
 session = requests.Session()
 
 DEFAULT_NSO_VER = '2.0.0'
+
+EMPTY = ""
 
 # FLOW PATH: Nintendo Session Code -> Nintendo Session Token ->
 #            Web Service Token -> Session Cookies
@@ -230,30 +233,35 @@ def friendListRequest(nsoVersion, userLoginToken):
 
 def getFriendJSON(nsoVersion, userLang):
 
-    # Get Nintendo Session Token
-    ninSessionToken = getNintendoSessionToken(nsoVersion)
+    config = openConfig()
 
-    # Get API Token
-    apiToken = getAPIToken(nsoVersion, ninSessionToken, userLang)
+    def genCycle(nsoVersion, userLang):
+        # Get Nintendo Session Token
+        ninSessionToken = getNintendoSessionToken(nsoVersion)
+        # Get API Token
+        apiToken = getAPIToken(nsoVersion, ninSessionToken, userLang)
+        # Get User Info
+        userInfo = getUserInfo(nsoVersion, apiToken, userLang)
+        # Get User Login
+        userLoginToken = getUserLogin(nsoVersion, apiToken, userInfo, userLang)
+        # Get Friend List
+        friendListJSON = friendListRequest(nsoVersion, userLoginToken)
 
-    # Get User Info
-    userInfo = getUserInfo(nsoVersion, apiToken, userLang)
+        config["apiToken"] = apiToken
+        writeConfig(config)
 
-    # Get User Login
-    userLoginToken = getUserLogin(nsoVersion, apiToken, userInfo, userLang)
-   
-    # Get Friend List
-    friendListJSON = friendListRequest(nsoVersion, userLoginToken)
+        return friendListJSON
 
-    print("\n\n")
-    return friendListJSON
+    if config["apiToken"] != EMPTY:
+        try:
+            userInfo = getUserInfo(nsoVersion, config['apiToken'], userLang)
+            userLoginToken = getUserLogin(nsoVersion, config['apiToken'], userInfo, userLang)
+            friendListJSON = friendListRequest(nsoVersion, userLoginToken)
 
+            return friendListJSON
 
-def main():
+        except Exception:   # Assume the Tokens have expired
+            return genCycle(nsoVersion, userLang)
     
-    NSO_VERSION = getNSOVersion()
-    USER_LANG = "en-US"
-
-    print(json.dumps(getFriendJSON(NSO_VERSION, USER_LANG), indent=4))
-
-main()
+    else:
+        return genCycle(nsoVersion, userLang)
