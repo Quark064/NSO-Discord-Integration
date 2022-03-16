@@ -5,27 +5,16 @@ from bs4 import BeautifulSoup
 
 from apiFunc import callFGenAPI
 from fileIO import openConfig, writeConfig
+from output import log
 
 session = requests.Session()
 
 DEFAULT_NSO_VER = '2.0.0'
 
-EMPTY = ""
+BLANK = ""
 
 # FLOW PATH: Nintendo Session Code -> Nintendo Session Token ->
 #            Web Service Token -> Session Cookies
-
-def log(msg, icon="deafult"):
-    match icon:
-        case "warning":
-            icon = "!"
-        case "question":
-            icon = "?"
-        case _:
-            icon = "•"
-        
-    print(f"[{icon}] {msg}")
-
 
 def getNSOVersion():
     '''Fetches the current Nintendo Switch Online app version from the Google Play Store.'''
@@ -230,53 +219,59 @@ def friendListRequest(nsoVersion, userLoginToken):
 
     return responseJSON
 
-
-def getFriendJSON(nsoVersion, userLang):
+def genCycle(depth, nsoVersion, userLang):
+    
+    # DEPTH 3 -> Regen all tokens
+    # DEPTH 2 -> Regen API token
+    # DEPTH 1 -> Regen bearer tokens
 
     config = openConfig()
 
-    def genCycle(nsoVersion, userLang):
-        # Get Nintendo Session Token
+    ninSessionToken = config["sessionToken"]
+    apiToken = config["apiToken"]
+    userLoginToken = config["bearerToken"]
+
+    TOKEN_LIST = [ninSessionToken, apiToken, userLoginToken]
+
+    for token in TOKEN_LIST:    # If one of the tokens is blank, regen all of them.
+        if token == BLANK:
+            depth = 3
+
+    if depth >= 3:
         ninSessionToken = getNintendoSessionToken(nsoVersion)
-        # Get API Token
+        config["sessionToken"] = ninSessionToken
+        log("Refreshed Session Token!")
+
+    if depth >= 2:
         apiToken = getAPIToken(nsoVersion, ninSessionToken, userLang)
-        # Get User Info
+        config["apiToken"] = apiToken
+        log("Refreshed API Token!")
+    
+    if depth >= 1:
         userInfo = getUserInfo(nsoVersion, apiToken, userLang)
-        # Get User Login
         userLoginToken = getUserLogin(nsoVersion, apiToken, userInfo, userLang)
-        # Get Friend List
+        config["bearerToken"] = userLoginToken
+        log("Refreshed Bearer Token!")
+    
+    if depth >= 0:
+        writeConfig(config)
         friendListJSON = friendListRequest(nsoVersion, userLoginToken)
 
-        config["sessionToken"] = ninSessionToken
-        config["apiToken"] = apiToken
-        writeConfig(config)
+    return friendListJSON
 
-        return friendListJSON
 
-    if config["apiToken"] != EMPTY:
-        try:
-            userInfo = getUserInfo(nsoVersion, config['apiToken'], userLang)
-            userLoginToken = getUserLogin(nsoVersion, config['apiToken'], userInfo, userLang)
-            friendListJSON = friendListRequest(nsoVersion, userLoginToken)
+def getFriendJSON(nsoVersion, userLang):
 
-            return friendListJSON
-
-        except Exception:   # API token has expired
-            if config["sessionToken"] != EMPTY:
-                try:
-                    apiToken = getAPIToken(nsoVersion, config["sessionToken"], userLang)
-                    userInfo = getUserInfo(nsoVersion, apiToken, userLang)
-                    userLoginToken = getUserLogin(nsoVersion, apiToken, userInfo, userLang)
-                    friendListJSON = friendListRequest(nsoVersion, userLoginToken)
-
-                    log("Generated new API token!", "warning")
-
-                    return friendListJSON
-                
-                except Exception:   # Both keys have expired.
-                    return genCycle(nsoVersion, userLang)
-            else:
-                return genCycle(nsoVersion, userLang)
-    
-    else:
-        return genCycle(nsoVersion, userLang)
+    try:                                                     # Recycle bearerToken
+       return genCycle(0, nsoVersion, userLang)
+    except Exception:
+        try:                                                 # Recycle apiToken
+            return genCycle(1, nsoVersion, userLang)
+        except Exception:
+            try:                                             # Recycle sessionToken
+                return genCycle(2, nsoVersion, userLang)
+            except Exception:
+                try:                                         # Regen all tokens
+                    return genCycle(3, nsoVersion, userLang)
+                except Exception:
+                    print("Couldn't refresh tokens!")

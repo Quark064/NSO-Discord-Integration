@@ -4,5 +4,5 @@ uploadedAssets = {
     "Fortnite": "fortnite"
 }
 
-def getAssetDict():
+def getAssetDict():  # Will probably be fetched from the internet in the future.
     return uploadedAssets

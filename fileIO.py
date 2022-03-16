@@ -4,7 +4,7 @@ PATH = "Persistant/config.json"
 
 def createConfig():
     dict = {
-            "userID": 0,
+            "userID": 5103427393683456,
             "sessionToken": "",
             "apiToken": "",
             "bearerToken": ""
