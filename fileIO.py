@@ -6,7 +6,8 @@ def createConfig():
     dict = {
             "userID": 0,
             "sessionToken": "",
-            "apiToken": ""
+            "apiToken": "",
+            "bearerToken": ""
         }
     
     writeConfig(dict)
@@ -14,7 +15,7 @@ def createConfig():
 
 def writeConfig(dict):
     config = open(PATH, "w")
-    config.write(json.dumps(dict))
+    config.write(json.dumps(dict, indent=4))
     config.close()
 
 
