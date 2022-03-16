@@ -11,7 +11,7 @@ CLIENT_KEY = 953323389844615208
 NSO_VERSION = getNSOVersion()
 USER_LANG = "en-US"
 
-TIMEOUT_WAIT = 20
+TIMEOUT_WAIT = 15   # Online presence is checked every 'TIMEOUT_WAIT' seconds
 
 def createRPC():
     rpc = Presence(CLIENT_KEY, pipe=0)
@@ -41,7 +41,7 @@ def rpcManageChange(rpc, newState):
 def updateLoop(rpc):
 
     config = openConfig()
-    lastState = processResponse(config["userID"])
+    lastState = ()
 
     while True:
         newState = processResponse(config["userID"])
@@ -54,11 +54,16 @@ def updateLoop(rpc):
 
 
 def findUserID(dict, ID):
-        for num, entry in enumerate(dict['result']['friends']):
-            if entry['id'] == ID:
-                return num
-        return -1
+    for num, entry in enumerate(dict['result']['friends']):
+        if entry['id'] == ID:
+            return num
+    return -1
 
+def gameNameFormatter(name):
+    TO_REMOVE = list(",.':")
+    for char in TO_REMOVE:
+        name.replace(char, "")
+    return name.lower()
 
 def processResponse(ID):
     '''Process a raw JSON response and returns a Tuple with the values.'''
@@ -74,7 +79,7 @@ def processResponse(ID):
     sysDesc = None
     
     gameID = 'default'
-    stateMessage = ''
+    stateMessage = None
 
 
     if userNum < 0:
@@ -89,9 +94,11 @@ def processResponse(ID):
         sysDesc = dict['result']['friends'][userNum]['presence']['game']['sysDescription']
     except KeyError:
         pass
-
-    if gameName in assetDict:
-        gameID = assetDict[gameName]
+    
+    if gameName != None:
+        cleanGameName = gameNameFormatter(gameName)
+        if cleanGameName in assetDict:
+            gameID = assetDict[cleanGameName]
 
     if onlineState == 'ONLINE':
         if totalPlayTime != 0:

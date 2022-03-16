@@ -217,6 +217,9 @@ def friendListRequest(nsoVersion, userLoginToken):
     response = requests.post(URL, headers=appHead, json=body)
     responseJSON = json.loads(response.text)
 
+    if responseJSON['status'] != 0:
+        raise Exception("Token expired!")
+
     return responseJSON
 
 def genCycle(depth, nsoVersion, userLang):
