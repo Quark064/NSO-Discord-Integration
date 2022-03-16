@@ -247,6 +247,7 @@ def getFriendJSON(nsoVersion, userLang):
         # Get Friend List
         friendListJSON = friendListRequest(nsoVersion, userLoginToken)
 
+        config["sessionToken"] = ninSessionToken
         config["apiToken"] = apiToken
         writeConfig(config)
 
@@ -260,8 +261,22 @@ def getFriendJSON(nsoVersion, userLang):
 
             return friendListJSON
 
-        except Exception:   # Assume the Tokens have expired
-            return genCycle(nsoVersion, userLang)
+        except Exception:   # API token has expired
+            if config["sessionToken"] != EMPTY:
+                try:
+                    apiToken = getAPIToken(nsoVersion, config["sessionToken"], userLang)
+                    userInfo = getUserInfo(nsoVersion, apiToken, userLang)
+                    userLoginToken = getUserLogin(nsoVersion, apiToken, userInfo, userLang)
+                    friendListJSON = friendListRequest(nsoVersion, userLoginToken)
+
+                    log("Generated new API token!", "warning")
+
+                    return friendListJSON
+                
+                except Exception:   # Both keys have expired.
+                    return genCycle(nsoVersion, userLang)
+            else:
+                return genCycle(nsoVersion, userLang)
     
     else:
         return genCycle(nsoVersion, userLang)
