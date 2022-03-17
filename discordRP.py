@@ -14,7 +14,7 @@ USER_LANG = "en-US"
 TIMEOUT_WAIT = 15   # Online presence is checked every 'TIMEOUT_WAIT' seconds
 
 def createRPC():
-    '''Creates and returns a RPC Presence class to update status.'''
+    '''Creates and returns a RPC Presence Class to update status.'''
     
     rpc = Presence(CLIENT_KEY, pipe=0)
     rpc.connect()
@@ -90,7 +90,7 @@ def processResponse(ID):
     totalPlayTime = 0
     sysDesc = None
     
-    gameID = 'default'
+    gameID = 'unknown'
     stateMessage = None
 
 
