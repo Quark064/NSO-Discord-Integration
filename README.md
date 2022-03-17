@@ -23,6 +23,8 @@ This program aims to automate adding your Switch Online Presence to the Discord 
 # SETUP
 *This is still in Alpha so the instructions are going to be pretty bare, and you will probably encounter a lot of fun crashes. I will be creating executables for more polished versions (unless I get help porting it to Electron or something) in the future.*
 
+NOTE: To properly authenticate the Tokens, an external API is used to generate a specific hash needed to log-in properly. If you are concerned about this, feel free to read more about it [here](https://github.com/frozenpandaman/splatnet2statink/wiki/api-docs).
+
 Due to the structure of the program, a secondary Nintendo Account is required. This allows for both detection of your online presence and ban protection (highly unlikely) against your main account.
 * Create a new user account on your Switch.
 * Create and link a Nintendo Account to it.
