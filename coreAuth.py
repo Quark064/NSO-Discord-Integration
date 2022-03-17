@@ -14,7 +14,7 @@ DEFAULT_NSO_VER = '2.0.0'
 BLANK = ""
 
 # FLOW PATH: Nintendo Session Code -> Nintendo Session Token ->
-#            Web Service Token -> Session Cookies
+#            Web Service Token -> Bearer Token
 
 def getNSOVersion():
     '''Fetches the current Nintendo Switch Online app version from the Google Play Store.'''
