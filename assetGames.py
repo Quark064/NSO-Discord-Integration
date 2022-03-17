@@ -12,4 +12,6 @@ uploadedAssets = {
 }
 
 def getAssetDict():  # Will probably be fetched from the internet in the future.
+    '''Returns the asset dictionary.'''
+    
     return uploadedAssets

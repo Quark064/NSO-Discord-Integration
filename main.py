@@ -2,6 +2,8 @@
 from discordRP import createRPC, updateLoop
 
 def rpcThread():
+    '''Call the Infinite Update loop to run in it's own thread.'''
+    
     rpc = createRPC()
     updateLoop(rpc)
 
@@ -11,5 +13,5 @@ def rpcThread():
 # 
 # print("Started the NSO-DI Service!")
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # Threading to be implimented.
     rpcThread()

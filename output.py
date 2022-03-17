@@ -1,4 +1,6 @@
-def log(msg, icon="deafult"):
+def log(msg, icon="default"):
+    '''Logs a user message in a formatted manner.'''
+    
     match icon:
         case "warning":
             icon = "!"

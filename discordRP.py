@@ -14,6 +14,8 @@ USER_LANG = "en-US"
 TIMEOUT_WAIT = 15   # Online presence is checked every 'TIMEOUT_WAIT' seconds
 
 def createRPC():
+    '''Creates and returns a RPC Presence class to update status.'''
+    
     rpc = Presence(CLIENT_KEY, pipe=0)
     rpc.connect()
     
@@ -21,6 +23,8 @@ def createRPC():
 
 
 def rpcManageChange(rpc, newState):
+    '''Updates the Discord Status when a change in online presence is detected.'''
+
     online, onlineState, onlineSince, gameName, gameID = newState
     
     if not online:
@@ -39,6 +43,7 @@ def rpcManageChange(rpc, newState):
 
 
 def updateLoop(rpc):
+    '''Loop that checks on the users online status every 'TIMEOUT_WAIT' seconds.'''
 
     config = openConfig()
     lastState = ()
@@ -54,6 +59,8 @@ def updateLoop(rpc):
 
 
 def findUserID(dict, ID):
+    '''Takes the userID and finds their position in the Friend JSON.'''
+    
     if ID == "":            # Temp solution, won't work if Nintendo Account has >1 friend.
         return 0
     
@@ -63,7 +70,9 @@ def findUserID(dict, ID):
     return -1
 
 def gameNameFormatter(name):
+    '''Sanitizes game name strings for naming simplicity.'''
     TO_REMOVE = list(",.':")
+    
     for char in TO_REMOVE:
         name = name.replace(char, "")
     return name.lower()

@@ -24,7 +24,7 @@ def callFGenAPI(idToken, guid, timeStamp, type):
 
 
 def getElifeAPIHash(idToken, timeStamp):
-    '''Gets some hash I need IDRK'''
+    '''Fetches an authentication hash used to generate the Bearer Token.'''
 
     USER_AGENT = "splatnet2statink/1.7.0"
     API_LINK = "https://elifessler.com/s2s/api/gen2"

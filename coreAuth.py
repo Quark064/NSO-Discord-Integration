@@ -55,12 +55,12 @@ def getNintendoSessionToken(nsoVersion):
 	}
 
     body = {
-		'state':                               authState,
+		'state':                                authState,
 		'redirect_uri':                        'npf71b963c1b7b6d119://auth',
 		'client_id':                           '71b963c1b7b6d119',
 		'scope':                               'openid user user.birthday user.mii user.screenName',
 		'response_type':                       'session_token_code',
-		'session_token_code_challenge':        authCodeChallenge,
+		'session_token_code_challenge':         authCodeChallenge,
 		'session_token_code_challenge_method': 'S256',
 		'theme':                               'login_form'
 	}
@@ -99,8 +99,8 @@ def ninSessionCodeToToken(nsoVersion, ninSessionCode, authCodeVerifier):
 
     body = {
 		'client_id':                   '71b963c1b7b6d119',
-		'session_token_code':          ninSessionCode,
-		'session_token_code_verifier': authCodeVerifier
+		'session_token_code':           ninSessionCode,
+		'session_token_code_verifier':  authCodeVerifier
 	}
 
     response = session.post(URL, headers=appHead, data=body)
@@ -110,6 +110,7 @@ def ninSessionCodeToToken(nsoVersion, ninSessionCode, authCodeVerifier):
 
 
 def getAPIToken(nsoVersion, ninSessionToken, userLang):
+    '''Takes a Session Token and generates an API token.'''
 
     URL = "https://accounts.nintendo.com/connect/1.0.0/api/token"
 
@@ -137,6 +138,7 @@ def getAPIToken(nsoVersion, ninSessionToken, userLang):
 
 
 def getUserInfo(nsoVersion, apiToken, userLang):
+    '''Takes an API Token and gathers user information for Bearer Token Generation.'''
 
     URL = "https://api.accounts.nintendo.com/2.0.0/users/me"
 
@@ -157,6 +159,8 @@ def getUserInfo(nsoVersion, apiToken, userLang):
 
 
 def getUserLogin(nsoVersion, apiToken, userInfo, userLang):
+    '''Takes user information and an API token and uses external API's 
+       to generate a Bearer Token to use to get Online Status.'''
 
     URL = "https://api-lp1.znc.srv.nintendo.net/v1/Account/Login"
     
@@ -196,6 +200,7 @@ def getUserLogin(nsoVersion, apiToken, userInfo, userLang):
 
 
 def friendListRequest(nsoVersion, userLoginToken):
+    '''Takes a Bearer Token and retrives the raw Friend List JSON.'''
      
     URL = "https://api-lp1.znc.srv.nintendo.net/v3/Friend/List"
      
@@ -218,16 +223,21 @@ def friendListRequest(nsoVersion, userLoginToken):
     responseJSON = json.loads(response.text)
 
     if responseJSON['status'] != 0:
-        raise Exception("Token expired!")
+        raise Exception("Recieved an error from the Friend API!")
 
     return responseJSON
 
 def genCycle(depth, nsoVersion, userLang):
-    
-    # DEPTH 3 -> Regen all tokens
-    # DEPTH 2 -> Regen API token
-    # DEPTH 1 -> Regen bearer tokens
+    '''
+    Manages Tokens and calls all of the other coreAuth methods to
+    properly generate and replace expired keys.
 
+    DEPTH 3 -> Regen all Tokens
+    DEPTH 2 -> Regen API Token
+    DEPTH 1 -> Regen Bearer Tokens
+
+    '''
+    
     config = openConfig()
 
     ninSessionToken = config["sessionToken"]
@@ -264,6 +274,7 @@ def genCycle(depth, nsoVersion, userLang):
 
 
 def getFriendJSON(nsoVersion, userLang):
+    '''Handles API errors and calls 'genCycle()' with the right depth.'''
 
     try:                                                     # Recycle bearerToken
        return genCycle(0, nsoVersion, userLang)
