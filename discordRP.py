@@ -62,7 +62,7 @@ def findUserID(dict, ID):
 def gameNameFormatter(name):
     TO_REMOVE = list(",.':")
     for char in TO_REMOVE:
-        name.replace(char, "")
+        name = name.replace(char, "")
     return name.lower()
 
 def processResponse(ID):
