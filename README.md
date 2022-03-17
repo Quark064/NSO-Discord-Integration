@@ -17,6 +17,7 @@ This program aims to automate adding your Switch Online Presence to the Discord 
 
 ## CREDITS
 [eli](https://github.com/frozenpandaman): Wrote the `splatnet2statink` repo, which I unceremoniously stole and repurposed code from for authentication purposes; along with their hashing API.
+
 [qwertyquerty](https://github.com/qwertyquerty): For the `pypresence` library that greatly simplified getting the PoC working.
 
 # SETUP
