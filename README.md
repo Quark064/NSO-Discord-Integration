@@ -1,10 +1,6 @@
 # HEAVY WIP
 This program aims to automate adding your Switch Online Presence to the Discord GameSDK automatically, allowing all of your Discord friends to see you online on your Switch.
 
-## CREDITS
-[eli](https://github.com/frozenpandaman): Wrote the `splatnet2statink` repo, which I unceremoniously stole and repurposed code from for authentication purposes; along with their hashing API.
-[qwertyquerty](https://github.com/qwertyquerty): For the `pypresence` library that greatly simplified getting the PoC working.
-
 ## CURRENT STATUS:
 * Found work-around to allow for your own online presence to be shown in the NSO application. ✅
 * Repurposed the `splatnet2statink` repository to fetch your current online status in a JSON format. ✅
@@ -17,6 +13,10 @@ This program aims to automate adding your Switch Online Presence to the Discord 
 * MAYBE'S (IDK IF THESE ARE POSSIBLE WITH PYTHON AND DEFINITLY WON'T WORK CROSS PLATFORM)
   * Tray Icon
   * Enable `npf71b963c1b7b6d119` redirection to avoid awkward copy-pasting of session keys.
+
+## CREDITS
+[eli](https://github.com/frozenpandaman): Wrote the `splatnet2statink` repo, which I unceremoniously stole and repurposed code from for authentication purposes; along with their hashing API.
+[qwertyquerty](https://github.com/qwertyquerty): For the `pypresence` library that greatly simplified getting the PoC working.
 
 # SETUP
 *This is still in Alpha so the instructions are going to be pretty bare, and you will probably encounter a lot of fun crashes. I will be creating executables for more polished versions (unless I get help porting it to Electron or something) in the future.*
