@@ -30,15 +30,15 @@ Due to the structure of the program, a secondary Nintendo Account is required. T
 * Create and link a Nintendo Account to it.
 * Go to the Friend Settings of the new user and add your main account as a friend (via your Friend Code).
 
-Requirements:
+Requirements
 * Python >= 3.10
 * Discord installed on your machine.
-* Additional libraries:
-  * `pip install bs4`
-  * `pip install pypresence`
 
 Setting Up
 * Clone or download the repo.
+* Install the required libraries with the following commands:
+  * `pip install bs4`
+  * `pip install pypresence`
 * Run the `main.py` file and follow the directions to link the new Nintendo Account you created to the program.
   * Generated keys are stored in the `config.json` file and are only sent to Nintendo.
 * Success!! If all went well, as long as you keep the program running, your Discord status will now reflect your Switch Online status. 
