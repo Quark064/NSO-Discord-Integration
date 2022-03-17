@@ -1,8 +1,9 @@
 from time import sleep
+from unidecode import unidecode
 from pypresence import Presence
 from coreAuth import getNSOVersion, getFriendJSON
 from assetGames import getAssetDict
-from fileIO import openConfig
+from fileIO import openConfig, writeConfig
 from output import log
 from sys import exit
 
@@ -10,8 +11,10 @@ CLIENT_KEY = 953323389844615208
 
 NSO_VERSION = getNSOVersion()
 USER_LANG = "en-US"
+GAME_ASSET_DICT = getAssetDict()
 
-TIMEOUT_WAIT = 15   # Online presence is checked every 'TIMEOUT_WAIT' seconds
+TIMEOUT_WAIT = 16   # Online presence is checked every 'TIMEOUT_WAIT' seconds
+                    # Discord only allows for RPC updates every 15 seconds.
 
 def createRPC():
     '''Creates and returns a RPC Presence Class to update status.'''
@@ -45,13 +48,14 @@ def rpcManageChange(rpc, newState):
 def updateLoop(rpc):
     '''Loop that checks on the users online status every 'TIMEOUT_WAIT' seconds.'''
 
-    config = openConfig()
     lastState = ()
+    log("Starting loop cycle!")
 
     while True:
+        config = openConfig()
         newState = processResponse(config["userID"])
 
-        if lastState != newState:  
+        if lastState != newState:
             rpcManageChange(rpc, newState)
         
         lastState = newState
@@ -61,8 +65,35 @@ def updateLoop(rpc):
 def findUserID(dict, ID):
     '''Takes the userID and finds their position in the Friend JSON.'''
     
-    if ID == "":            # Temp solution, won't work if Nintendo Account has >1 friend.
-        return 0
+    if ID == 0:     # If userID has not been configured yet.
+        config = openConfig()
+        max = 0
+        log("No userID was found in the log file! Please enter the number next your your account below.", "warning")
+        
+        for num, entry in enumerate(dict['result']['friends']):
+            log(f"{num+1}: {entry['name']}", indent=1)
+            max += 1
+        
+        if max == 0:
+            log("No friends were found linked to this Nintendo Account!", "warning")
+            log("Add your main account as a friend and try again.")
+            exit(1)
+        else:
+            print()
+            log("If your name is not present, you have not friended your main account with your alt account yet.")
+            log("If this is the case, please close the program and try again.\n")
+        
+        while True:
+            ID = input("[?] Enter the number next to your account: ")
+            if ID.isdigit():
+                ID = int(ID)-1
+                if ID >= 0 and ID < max:
+                    break
+            log("That was not a valid option! Try again...\n", "warning")
+        
+        ID = dict['result']['friends'][ID]['id']
+        config['userID'] = ID
+        writeConfig(config)
     
     for num, entry in enumerate(dict['result']['friends']):
         if entry['id'] == ID:
@@ -75,13 +106,12 @@ def gameNameFormatter(name):
     
     for char in TO_REMOVE:
         name = name.replace(char, "")
-    return name.lower()
+    return unidecode(name.lower())
 
 def processResponse(ID):
     '''Process a raw JSON response and returns a Tuple with the values.'''
 
     dict = getFriendJSON(NSO_VERSION, USER_LANG)
-    assetDict = getAssetDict()
     userNum = findUserID(dict, ID)
 
     onlineState = None
@@ -109,8 +139,8 @@ def processResponse(ID):
     
     if gameName != None:
         cleanGameName = gameNameFormatter(gameName)
-        if cleanGameName in assetDict:
-            gameID = assetDict[cleanGameName]
+        if cleanGameName in GAME_ASSET_DICT:
+            gameID = GAME_ASSET_DICT[cleanGameName]
 
     if onlineState == 'ONLINE':
         if totalPlayTime != 0:

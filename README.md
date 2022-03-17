@@ -39,6 +39,7 @@ Setting Up
 * Install the required libraries with the following commands:
   * `pip install bs4`
   * `pip install pypresence`
+  * `pip install unidecode`
 * Run the `main.py` file and follow the directions to link the new Nintendo Account you created to the program.
   * Generated keys are stored in the `config.json` file and are only sent to Nintendo.
 * Success!! If all went well, as long as you keep the program running, your Discord status will now reflect your Switch Online status. 

@@ -70,12 +70,20 @@ def getNintendoSessionToken(nsoVersion):
     response = session.get(URL, headers=appHead, params=body)
     specialLoginURL = response.history[0].url
 
-    log("Here is your special URL!\n")
+    log("Copy/Paste this URL and sign in with your Alt Nintendo Account:\n")
     print(specialLoginURL)
     print("\n")
     
-    log("Please enter the right clicked URL:\n", "question")
-    userAccountURL = input()
+    log("Right-click the 'Select this account' button, copy the link, and paste it here.")
+    
+    while True:
+        log("Please enter the right-clicked URL:\n", "question")
+        userAccountURL = input()
+        userAccountURL = userAccountURL.strip()
+        print()
+        if userAccountURL.startswith("npf71b963c1b7b6d119://auth#session_state="):
+            break
+        log("That doesn't appear to be a valid URL, please try again...", "warning")
 
     ninSessionCode = re.search('de=(.*)&', userAccountURL).group(1)
     ninServiceToken = ninSessionCodeToToken(nsoVersion, ninSessionCode, authCodeVerifier)
