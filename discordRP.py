@@ -54,6 +54,9 @@ def updateLoop(rpc):
 
 
 def findUserID(dict, ID):
+    if ID == "":            # Temp solution, won't work if Nintendo Account has >1 friend.
+        return 0
+    
     for num, entry in enumerate(dict['result']['friends']):
         if entry['id'] == ID:
             return num
