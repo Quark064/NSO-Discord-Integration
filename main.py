@@ -11,4 +11,5 @@ def rpcThread():
 # 
 # print("Started the NSO-DI Service!")
 
-rpcThread()
+if __name__ == "__main__":
+    rpcThread()

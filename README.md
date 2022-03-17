@@ -7,6 +7,7 @@ This program aims to automate adding your Switch Online Presence to the Discord 
 * Working PoC using `pypresence`! ✅
 
 ## TO-DO
+* Figure out Python threading so the update loop can run independently from the (eventual) GUI.
 * Error Checking.
 * GUI
 * Get permission to actually be using some of the API's and do proper crediting!!
