@@ -1,3 +1,5 @@
+# Credit to Eli Fessler for base code.
+
 import os, time
 import requests, json, re
 import base64, hashlib, uuid
