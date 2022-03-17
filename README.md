@@ -8,8 +8,9 @@ This program aims to automate adding your Switch Online Presence to the Discord 
 
 ## TO-DO
 * Error Checking.
-* Integrate with Discord GameSDK by porting network code to .NET or Electron.
-  * Build an executable based on one of the two options listed above.
-  * Build an installable GUI Interface.
-  * Enable `npf71b963c1b7b6d119` redirection to avoid awkward copy-pasting of session keys.
+* GUI
 * Get permission to actually be using some of the API's and do proper crediting!!
+
+## MAYBE'S (IDK IF THESE ARE POSSIBLE WITH PYTHON AND DEFINITLY WON"T WORK CROSS PLATFORM)
+* Tray Icon
+* Enable `npf71b963c1b7b6d119` redirection to avoid awkward copy-pasting of session keys.
