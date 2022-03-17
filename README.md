@@ -11,7 +11,7 @@ This program aims to automate adding your Switch Online Presence to the Discord 
 * Error Checking.
 * GUI
 * Get permission to actually be using some of the API's and do proper crediting!!
-* MAYBE'S (IDK IF THESE ARE POSSIBLE WITH PYTHON AND DEFINITLY WON'T WORK CROSS PLATFORM)
+* MAYBE'S (IDK if these are actually possible with Python and definitely won't work cross-platform.)
   * Tray Icon
   * Enable `npf71b963c1b7b6d119` redirection to avoid awkward copy-pasting of session keys.
 
