@@ -26,7 +26,7 @@ def callFGenAPI(idToken, guid, timeStamp, type):
 def getElifeAPIHash(idToken, timeStamp):
     '''Fetches an authentication hash used to generate the Bearer Token.'''
 
-    USER_AGENT = "splatnet2statink/1.7.0"
+    USER_AGENT = "NSO-DI/0.1.0"
     API_LINK = "https://elifessler.com/s2s/api/gen2"
 
     apiAppHead = { 'User-Agent': USER_AGENT }
